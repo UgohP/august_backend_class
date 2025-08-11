@@ -27,12 +27,32 @@ function countStudents(filePath) {
         } else {
           students[field[3]] = [field[0]];
         }
+        if (Object.prototype.hasOwnProperty.call(fields, field[3])){
+          fields[field[3]] += 1
+        }else{
+          fields[field[3]] = 1
+        }
       }
     }
-    console.log(students)
+    const l = length - 1
+    console.log(`Number of students: ${l}`)
+    for (const [key, value] of Object.entries(students)){
+      if(key !== 'field'){
+        console.log(`Number of students in ${key}: ${fields[key]}. List: ${value.join(', ')}`)
+      }
+    }
   } catch (err) {
     console.error(err);
   }
 }
 
 countStudents("database.csv");
+
+// const os = require('os')
+
+// console.log(os.release())
+// console.log(os.totalmem())
+// console.log(os.freemem())
+// console.log(os.userInfo())
+// console.log(os.hostname())
+// console.log(os.uptime())
