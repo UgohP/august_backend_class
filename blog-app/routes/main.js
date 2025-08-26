@@ -54,12 +54,26 @@ router.get("/blog/:id", async (req, res) => {
   }
 });
 
-router.get("/about", (req, res) => {
-  const locals = {
-    title: "Blog App",
-    description: "about",
-  };
-  res.render("about", { locals });
+/**
+ * POST request
+ * API endpoint to post a search
+ */
+router.post("/search", async (req, res) => {
+  try {
+    const searchTerm = req.body.searchTerm;
+    const removeSpecialCharacters = searchTerm.replace(/[^a-zA-Z0-9]/g, "");
+
+    const data = await Blog.find({
+      $or: [
+        { title: { $regex: new RegExp(removeSpecialCharacters, "i") } },
+        { body: { $regex: new RegExp(removeSpecialCharacters, "i") } },
+      ],
+    });
+
+    res.render("search", { data });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = router;
