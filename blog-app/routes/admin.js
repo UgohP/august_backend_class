@@ -5,6 +5,7 @@ const User = require("../models/User");
 const adminLayout = "../views/layouts/admin.ejs";
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/auth.middleware");
+const Blog = require("../models/Blog");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 adminRouter.get("/admin", async (req, res) => {
@@ -43,7 +44,8 @@ adminRouter.post("/login", async (req, res) => {
 
 adminRouter.get("/dashboard", authMiddleware, async (req, res) => {
   try {
-    res.render("admin/dashboard", { layout: adminLayout });
+    const data = await Blog.find().sort({ createdAt: -1 });
+    res.render("admin/dashboard", { data, layout: adminLayout });
   } catch (error) {
     console.log(error);
   }
@@ -64,6 +66,28 @@ adminRouter.post("/register", async (req, res) => {
       }
       res.status(500).json({ message: "Server Error" });
     }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+adminRouter.get("/add-blog", async (req, res) => {
+  try {
+    res.render("admin/add-blog", { layout: adminLayout });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+adminRouter.post("/add-blog", async (req, res) => {
+  try {
+    const data = new Blog({
+      title: req.body.title,
+      body: req.body.body,
+    });
+    await Blog.create(data);
+    // res.status(201).json({ message: "Blog Created", data });
+    res.redirect("/dashboard");
   } catch (error) {
     console.log(error);
   }
