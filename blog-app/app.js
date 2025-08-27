@@ -4,6 +4,7 @@ const expressLayout = require("express-ejs-layouts");
 const router = require("./routes/main");
 const connectDB = require("./utils/db");
 const adminRouter = require("./routes/admin");
+const cookieParser = require("cookie-parser")
 
 const app = express();
 
@@ -13,6 +14,7 @@ connectDB();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 //Template Engine
 app.use(expressLayout);
