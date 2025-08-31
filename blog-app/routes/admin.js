@@ -8,6 +8,10 @@ const authMiddleware = require("../middlewares/auth.middleware");
 const Blog = require("../models/Blog");
 const JWT_SECRET = process.env.JWT_SECRET;
 
+/**
+ * GET request
+ * API endpoint to get the admin page
+ */
 adminRouter.get("/admin", async (req, res) => {
   try {
     const locals = {
@@ -19,6 +23,10 @@ adminRouter.get("/admin", async (req, res) => {
   }
 });
 
+/**
+ * POST request
+ * API endpoint to login the user
+ */
 adminRouter.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -42,6 +50,10 @@ adminRouter.post("/login", async (req, res) => {
   }
 });
 
+/**
+ * GET request
+ * API endpoint to get the dashbaord
+ */
 adminRouter.get("/dashboard", authMiddleware, async (req, res) => {
   try {
     const data = await Blog.find().sort({ createdAt: -1 });
@@ -51,6 +63,10 @@ adminRouter.get("/dashboard", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * POST request
+ * API endpoint to register a user
+ */
 adminRouter.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -71,6 +87,10 @@ adminRouter.post("/register", async (req, res) => {
   }
 });
 
+/**
+ * GET request
+ * API endpoint to get the add-blog page
+ */
 adminRouter.get("/add-blog", async (req, res) => {
   try {
     res.render("admin/add-blog", { layout: adminLayout });
@@ -79,6 +99,10 @@ adminRouter.get("/add-blog", async (req, res) => {
   }
 });
 
+/**
+ * POST request
+ * API endpoint to POST(add) a new blog
+ */
 adminRouter.post("/add-blog", async (req, res) => {
   try {
     const data = new Blog({
@@ -93,6 +117,41 @@ adminRouter.post("/add-blog", async (req, res) => {
   }
 });
 
+adminRouter.get("/edit-blog/:id", async (req, res) => {
+  try {
+    const data = await Blog.findOne({ _id: req.params.id });
+    res.render("admin/edit-blog", { data });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+adminRouter.put("/edit-blog/:id", async (req, res) => {
+  try {
+    await Blog.findByIdAndUpdate(req.params.id, {
+      title: req.body.title,
+      body: req.body.body,
+      updatedAt: Date.now(),
+    });
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+adminRouter.delete("/delete-blog/:id", async (req, res) => {
+  try {
+    await Blog.deleteOne({ _id: req.params.id });
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+/**
+ * GET request
+ * API endpoint to logout a user
+ */
 adminRouter.get("/logout", async (req, res) => {
   try {
     res.clearCookie("token");
