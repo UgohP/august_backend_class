@@ -117,6 +117,10 @@ adminRouter.post("/add-blog", async (req, res) => {
   }
 });
 
+/**
+ * GET request
+ * API endpoint to get the edit blog page
+ */
 adminRouter.get("/edit-blog/:id", async (req, res) => {
   try {
     const data = await Blog.findOne({ _id: req.params.id });
@@ -126,6 +130,10 @@ adminRouter.get("/edit-blog/:id", async (req, res) => {
   }
 });
 
+/**
+ * PUT request
+ * API endpoint to update a blog
+ */
 adminRouter.put("/edit-blog/:id", async (req, res) => {
   try {
     await Blog.findByIdAndUpdate(req.params.id, {
@@ -139,6 +147,10 @@ adminRouter.put("/edit-blog/:id", async (req, res) => {
   }
 });
 
+/**
+ * DELETE request
+ * API endpoint to delete a blog
+ */
 adminRouter.delete("/delete-blog/:id", async (req, res) => {
   try {
     await Blog.deleteOne({ _id: req.params.id });
