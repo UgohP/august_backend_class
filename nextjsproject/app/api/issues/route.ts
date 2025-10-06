@@ -8,16 +8,21 @@ const createIssueSchema = z.object({
 })
 
 export async function POST(request: NextRequest){
-    const body = await request.json();
-    const validation = createIssueSchema.safeParse(body)
-
-    if(!validation.success){
-        return NextResponse.json(validation.error, {status: 401})
-    }
-
-    const newIssue = await prisma.issueTracker.create({
-        data : {title: body.title, description: body.description}
-    })
-
-    return NextResponse.json(newIssue, {status: 201})
+    try{
+        const body = await request.json();
+        const validation = createIssueSchema.safeParse(body)
+    
+        if(!validation.success){
+            return NextResponse.json(validation.error, {status: 401})
+        }
+    
+        const newIssue = await prisma.issueTracker.create({
+            data : {title: body.title, description: body.description}
+        })
+    
+        return NextResponse.json(newIssue, {status: 201})
+    }catch(error){
+        console.log("Error creating Issue:", error);
+        return NextResponse.json({error: 'Internal Server error'}, {status: 500});
+}
 }
