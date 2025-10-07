@@ -26,3 +26,15 @@ export async function POST(request: NextRequest){
         return NextResponse.json({error: 'Internal Server error'}, {status: 500});
 }
 }
+
+export async function GET(){
+    try{
+        const issues = await prisma.issueTracker.findMany({
+            orderBy: {createAt:"desc"}
+        })
+        return NextResponse.json(issues, {status: 200})
+    }catch(error){
+        console.log("Error fetching data:", error);
+        return NextResponse.json({error:"Failed fetching Issues"}, {status:500})
+    }
+}
